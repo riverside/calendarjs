@@ -1,0 +1,56 @@
+@CHARSET "UTF-8";
+.bcal-container{
+	background-color: #212121;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	float: left;
+	padding: 5px;
+}
+.bcal-table{
+	border-collapse: separate;
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	float: left;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+}
+.bcal-table thead{}
+.bcal-table thead tr{}
+.bcal-table thead th{
+	background-color: #212121;
+	/*border: solid 1px #fff;*/
+	color: #fff;
+	height: 20px;
+	text-align: center;
+}
+
+.bcal-table tbody{}
+.bcal-table tbody tr{}
+.bcal-table tbody td{
+	/*border: solid 1px #fff;*/
+	color: #fff;
+	cursor: pointer;
+	height: 25px;
+	width: 25px;
+	text-align: center;
+}
+.bcal-table .bcal-empty{
+	background-color: #212121;
+}
+.bcal-table .bcal-date{
+	background-color: #3F4252;
+	border: solid 1px #fff;
+}
+.bcal-table .bcal-today{
+	background-color: #1d1d1d;
+}
+.bcal-table .bcal-week{
+	border: solid 1px #fff;
+	background-color: #3F3F3F;
+}
+.bcal-table .bcal-selected{
+	background-color: #313131;
+}
