@@ -3,7 +3,7 @@
 	<head>
 		<title>CalendarJS</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link type="text/css" rel="stylesheet" href="../calendar.css" />
+		<link type="text/css" rel="stylesheet" href="../themes/light/calendar.css" />
 	</head>
 	<body>
 		<h1>Inline calendar</h1>
@@ -15,10 +15,9 @@
 		<h1>Datepicker</h1>
 		<input type="text" name="calendar_2" id="calendar_2" />
 				
-		<script type="text/javascript" src="../calendar.min.js"></script>
+		<script type="text/javascript" src="../calendar.js"></script>
 		<script type="text/javascript">
-		var cal_1 = new Calendar();
-		cal_1.init({
+		var cal_1 = new Calendar({
 			element: 'calendar_1',
 			inline: true,
 			months: 3,
@@ -27,8 +26,7 @@
 				document.getElementById('date_1').innerHTML = formated;
 			}
 		});
-		var cal_2 = new Calendar();
-		cal_2.init({
+		var cal_2 = new Calendar({
 			element: 'calendar_2',
 			weekNumbers: true,
 			onOpen: function (elem) {

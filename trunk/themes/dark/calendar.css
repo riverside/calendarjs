@@ -39,6 +39,7 @@
 }
 .bcal-table .bcal-empty{
 	background-color: #212121;
+	cursor: default;
 }
 .bcal-table .bcal-date{
 	background-color: #3F4252;
@@ -50,6 +51,7 @@
 .bcal-table .bcal-week{
 	border: solid 1px #fff;
 	background-color: #3F3F3F;
+	cursor: default;
 }
 .bcal-table .bcal-selected{
 	background-color: #313131;
