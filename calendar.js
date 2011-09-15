@@ -1,11 +1,11 @@
 /*!
- * CalendarJS v1.0
+ * CalendarJS v1.1
  *
  * Copyright 2011, Dimitar Ivanov (http://www.bulgaria-web-developers.com/projects/javascript/calendar/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL Version 3 
  * (http://www.opensource.org/licenses/gpl-3.0.html) license.
  * 
- * Date: Sun Jun 19 11:55:07 2011 +0200
+ * Date: Thu Sep 15 23:31:10 2011 +0300
  */
 (function (window, undefined) {
 	var now = new Date(),
