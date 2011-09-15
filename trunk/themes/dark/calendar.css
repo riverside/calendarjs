@@ -56,3 +56,9 @@
 .bcal-table .bcal-selected{
 	background-color: #313131;
 }
+.bcal-table .bcal-over,
+.bcal-table .bcal-date:hover{
+	background-color: #878BA3;
+	border: solid 1px #f1f1f1;
+	color: #222;
+}

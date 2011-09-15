@@ -60,7 +60,8 @@
 	border: solid 1px #FFCC66;
 	color: #CC6600;
 }
-.bcal-table .bcal-over{
+.bcal-table .bcal-over,
+.bcal-table .bcal-date:hover{
 	background-color: #FFFFCC;
 	border: solid 1px #FFC34C;
 	color: #CC6600;
