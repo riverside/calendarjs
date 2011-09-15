@@ -420,12 +420,7 @@
 		    	    			}
 	    	    			};
 	    	    		})(self, cell));
-	    	    		cell.onmouseover = function () {
-	    	    			Calendar.Util.addClass(this, "bcal-over");
-	    	    		};
-	    	    		cell.onmouseout = function () {
-	    	    			Calendar.Util.removeClass(this, "bcal-over");
-	    	    		};
+	    	    		
 	    	    	} else {
 	    	    		Calendar.Util.addClass(cell, 'bcal-empty');
 	    	    	}
