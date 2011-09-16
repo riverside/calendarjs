@@ -413,7 +413,7 @@
 	    	    				}
 	    	    				Calendar.Util.addClass(cell, 'bcal-selected');
 	    	    				var ts = parseInt(cell.getAttributeNode('bcal-date').value, 10);
-		    	    			self.opts.onSelect.apply(d.getElementById(self.opts.element), [self.formatDate(self.opts.dateFormat, ts), ts, cell]);
+		    	    			self.opts.onSelect.apply(self, [d.getElementById(self.opts.element), self.formatDate(self.opts.dateFormat, ts), ts, cell]);
 		    	    			if (self.opts.element && !self.opts.inline) {
 			    	    			self.close();
 			    	    			d.getElementById(self.opts.element).value = self.formatDate(self.opts.dateFormat, ts);
