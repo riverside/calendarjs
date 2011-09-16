@@ -334,7 +334,7 @@
 			row.appendChild(cell);
 			
 			cell = d.createElement('th');
-			cell.setAttribute('colspan', cols === 7 ? 5 : 6);
+			cell.colSpan = (cols === 7) ? 5 : 6;
 			Calendar.Util.addClass(cell, "bcal-month");
 			cell.appendChild(d.createTextNode(self.opts.monthNamesFull[firstOfMonth.getMonth()] + ' ' + firstOfMonth.getFullYear()));
 			row.appendChild(cell);
