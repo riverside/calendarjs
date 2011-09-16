@@ -9,6 +9,7 @@
 }
 .bcal-table{
 	border-collapse: separate;
+	border-spacing: 1px;
 	font-family: Arial, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
@@ -17,22 +18,17 @@
 	padding: 0;
 	width: 200px;
 }
-.bcal-table thead{}
-.bcal-table thead tr{}
 .bcal-table thead th{
 	background-color: #212121;
-	/*border: solid 1px #fff;*/
+	font-weight: bold;
 	color: #fff;
 	height: 20px;
 	text-align: center;
 }
-
-.bcal-table tbody{}
-.bcal-table tbody tr{}
 .bcal-table tbody td{
-	/*border: solid 1px #fff;*/
 	color: #fff;
 	cursor: pointer;
+	font-weight: normal;
 	height: 25px;
 	width: 25px;
 	text-align: center;
