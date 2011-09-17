@@ -246,20 +246,20 @@
 				});
 				Calendar.Util.addEvent(document, "mousedown", function (e) {
 					var target = Calendar.Util.getEventTarget(e);
-					if (target.className == "bcal-container" || 
-						target.className == "bcal-table" || 
-						target.className == "bcal-date" || 
-						target.className == "bcal-today" || 
-						target.className == "bcal-empty" || 
-						target.className == "bcal-selected" || 
-						target.className == "bcal-week" ||
-						target.className == "bcal-nav" ||
-						target.className == "bcal-navi" || 
-						target.className == "bcal-month" || 
-						target.className == "bcal-wday" || 
-						target.className == "bcal-wnum" ||
-						target.parentNode.className == "bcal-container" ||
-						target.parentNode.className == "bcal-table") {
+					if (Calendar.Util.hasClass(target, "bcal-container") || 
+						Calendar.Util.hasClass(target, "bcal-table") || 
+						Calendar.Util.hasClass(target, "bcal-date") || 
+						Calendar.Util.hasClass(target, "bcal-today") || 
+						Calendar.Util.hasClass(target, "bcal-empty") || 
+						Calendar.Util.hasClass(target, "bcal-selected") || 
+						Calendar.Util.hasClass(target, "bcal-week") ||
+						Calendar.Util.hasClass(target, "bcal-nav") ||
+						Calendar.Util.hasClass(target, "bcal-navi") || 
+						Calendar.Util.hasClass(target, "bcal-month") || 
+						Calendar.Util.hasClass(target, "bcal-wday") || 
+						Calendar.Util.hasClass(target, "bcal-wnum") ||
+						Calendar.Util.hasClass(target.parentNode, "bcal-container") ||
+						Calendar.Util.hasClass(target.parentNode, "bcal-table")) {
 						
 					} else {
 						self.close();
