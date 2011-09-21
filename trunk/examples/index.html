@@ -22,8 +22,8 @@
 			inline: true,
 			months: 3,
 			dateFormat: 'm/d/Y',
-			onSelect: function (formated, date, cell) {
-				document.getElementById('date_1').innerHTML = formated;
+			onSelect: function (element, selectedDate, date, cell) {
+				document.getElementById('date_1').innerHTML = selectedDate;
 			}
 		});
 		var cal_2 = new Calendar({

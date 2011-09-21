@@ -1,11 +1,11 @@
 /*!
- * CalendarJS v1.1
+ * CalendarJS v1.2
  *
  * Copyright 2011, Dimitar Ivanov (http://www.bulgaria-web-developers.com/projects/javascript/calendar/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL Version 3 
  * (http://www.opensource.org/licenses/gpl-3.0.html) license.
  * 
- * Date: Thu Sep 15 23:31:10 2011 +0300
+ * Date: Thu Sep 22 00:49:51 2011 +0300
  */
 (function (window, undefined) {
 	var now = new Date(),
@@ -209,11 +209,10 @@
 			var self = this,
 				i = 0, attrname,
 				body = d.getElementsByTagName("body")[0],
-				div = d.createElement('div'),
-				elem;
+				div = d.createElement('div');
 			self.id = Math.floor(Math.random() * 9999999);
-			elem = d.getElementById(self.opts.element);
-			if (!elem) {
+			self.element = d.getElementById(self.opts.element);
+			if (!self.element) {
 				return;
 			}
 			div.setAttribute('id', ['bcal-container', self.id].join('-'));
@@ -221,19 +220,19 @@
 			if (!self.opts.inline) {
 				div.style.display = 'none';
 				div.style.position = 'absolute';
-				Calendar.Util.addEvent(elem, 'focus', function (e) {
+				Calendar.Util.addEvent(self.element, 'focus', function (e) {
 					if (self.isOpen) {
 						self.close();
 					} else {
 						self.open();
 					}
 				});
-				Calendar.Util.addEvent(elem, 'blur', function (e) {
+				Calendar.Util.addEvent(self.element, 'blur', function (e) {
 					if (self.isOpen && !self.focus) {
 						self.close();
 					}
 				});
-				Calendar.Util.addEvent(elem, 'keydown', function (e) {
+				Calendar.Util.addEvent(self.element, 'keydown', function (e) {
 					var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
 					switch (key) {
 						case 9: //Tab
@@ -267,21 +266,14 @@
 				});
 				body.appendChild(div);
 			} else {
-				elem.appendChild(div);
+				self.element.appendChild(div);
 			}
+			self.container = div;
 			var y = self.opts.year, m = self.opts.month;
 			for (i = 0; i < self.opts.months; i++) {
 				self.draw(y, m + i, getIndex(i, self.opts.months));
 			}
 			return self;
-		},
-		/**
-		 * @param String key
-		 * @param Mixed value
-		 * @return void
-		 */
-		set: function (key, value) {
-			this[key] = value;
 		},
 		/**
 		 * @param String format
@@ -305,7 +297,6 @@
 				startDay = firstOfMonth.getUTCDay(),
 				first = firstOfMonth.getDay(),
 				i, day, date, rows = 0, cols = self.opts.weekNumbers ? 8 : 7,
-				div = d.getElementById(['bcal-container', self.id].join('-')),
 				table = d.createElement('table'),
 				thead = d.createElement('thead'),
 				tbody = d.createElement('tbody'),
@@ -316,10 +307,7 @@
 			cell = d.createElement('th');
 			if (index === 1 || index === 3) {
 				Calendar.Util.addEvent(cell, 'click', function (e) {
-					div.innerHTML = '';
-					/*for (i = self.months; i > 0; i--) {
-						self.draw(year, month - i, getIndex(i, self.months));
-					}*/
+					self.container.innerHTML = '';
 					for (i = 0; i < self.opts.months; i++) {
 						self.draw(year, month - self.opts.months + i, getIndex(i, self.opts.months));
 					}
@@ -345,7 +333,7 @@
 				Calendar.Util.addClass(cell, "bcal-nav");
 				text = d.createTextNode('>');
 				Calendar.Util.addEvent(cell, 'click', function (e) {
-					div.innerHTML = '';
+					self.container.innerHTML = '';
 					for (i = 0; i < self.opts.months; i++) {
 						self.draw(year, month + i + 1, getIndex(i, self.opts.months));
 					}
@@ -381,7 +369,6 @@
 	    	}
 	    	while (day <= daysInMonth) {
 	    		jsdate = new Date(year, month, day + startDay);
-	    		//jsdate = new Date(self.opts.year, self.opts.month, day + startDay);
 	    	    row = d.createElement('tr');
 	    	    if (self.opts.weekNumbers) {
 	    	    	cell = d.createElement('td');
@@ -396,10 +383,8 @@
 	    	    	cell = d.createElement('td');
 	    	    	if (day > 0 && day <= daysInMonth) {
 	    	    		cell.setAttribute('bcal-date', new Date(year, month, day).getTime());
-	    	    		//cell.setAttribute('bcal-date', new Date(self.opts.year, self.opts.month, day).getTime());
 	    	    		Calendar.Util.addClass(cell, 'bcal-date');
 	    	    		current = new Date(year, month, day);
-	    	    		//current = new Date(self.opts.year, self.opts.month, day);
 	    	    		if (today === [current.getFullYear(), current.getMonth(), current.getDate()].join('-')) {
 	    	    			Calendar.Util.addClass(cell, 'bcal-today');
 	    	    		}
@@ -413,11 +398,11 @@
 	    	    				}
 	    	    				Calendar.Util.addClass(cell, 'bcal-selected');
 	    	    				var ts = parseInt(cell.getAttributeNode('bcal-date').value, 10);
-		    	    			self.opts.onSelect.apply(self, [d.getElementById(self.opts.element), self.formatDate(self.opts.dateFormat, ts), ts, cell]);
 		    	    			if (self.opts.element && !self.opts.inline) {
 			    	    			self.close();
-			    	    			d.getElementById(self.opts.element).value = self.formatDate(self.opts.dateFormat, ts);
+			    	    			self.element.value = self.formatDate(self.opts.dateFormat, ts);
 		    	    			}
+		    	    			self.opts.onSelect.apply(self, [self.element, self.formatDate(self.opts.dateFormat, ts), ts, cell]);
 	    	    			};
 	    	    		})(self, cell));
 	    	    		
@@ -442,42 +427,48 @@
 			table.appendChild(tbody);
 			
 			Calendar.Util.addEvent(table, 'click', function (e) {
-				self.set('focus', true);
+				self.focus = true;
 			});
 			
 			var tbl = d.getElementById(['bcal-table', autoId].join('-'));
 			if (tbl) {
-				div.removeChild(tbl);
+				self.container.removeChild(tbl);
 			}
-			div.appendChild(table);
+			self.container.appendChild(table);
 		},
 		/**
 		 * @return Instance of calendar
 		 */
 		open: function () {
 			var self = this,
-				div = d.getElementById(['bcal-container', self.id].join('-')),
-				elem = d.getElementById(self.opts.element),
-				pos = findPos(elem);
-			self.opts.onBeforeOpen.apply(self, []);
-			div.style.top = (pos[1] + elem.offsetHeight) + 'px';
-			div.style.left = pos[0] + 'px';			
-			div.style.display = '';
-			self.opts.onOpen.apply(self, [elem]);
+				pos = findPos(self.element),
+				result;
+			result = self.opts.onBeforeOpen.apply(self, []);
+			if (result === false) {
+				return self;
+			}
+			self.container.style.top = (pos[1] + self.element.offsetHeight) + 'px';
+			self.container.style.left = pos[0] + 'px';			
+			self.container.style.display = '';
+			self.opts.onOpen.apply(self, [self.element]);
 			self.isOpen = true;
-			self.set('focus', true);
+			self.focus = true;
 			return self;
 		},
 		/**
 		 * @return Instance of calendar
 		 */
 		close: function () {
-			var self = this;
-			self.opts.onBeforeClose.apply(self, []);
-			d.getElementById(['bcal-container', self.id].join('-')).style.display = 'none';
+			var self = this,
+				result;
+			result = self.opts.onBeforeClose.apply(self, []);
+			if (result === false) {
+				return self;
+			}
+			self.container.style.display = 'none';
 			self.opts.onClose.apply(self, []);
 			self.isOpen = false;
-			self.set('focus', false);
+			self.focus = false;
 			return self;
 		}
 	};
