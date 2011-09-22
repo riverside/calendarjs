@@ -23,7 +23,7 @@
 .bcal-table thead th{
 	background-color: #fff;
 	font-weight: bold;
-	color: #975301;
+	color: #463422;
 	height: 20px;
 	text-align: center;
 }
@@ -36,29 +36,31 @@
 	text-align: center;
 }
 .bcal-table .bcal-empty{
-	background-color: #F3ED8D;
+	background-color: #795B3A;
+	border: solid 1px #795B3A;
 	cursor: default;
 }
 .bcal-table .bcal-date{
-	background-color: #F4A222;
-	border: solid 1px #E79215;
+	background-color: #557A35;
+	border: solid 1px #3D5625;
 }
 .bcal-table .bcal-today{
-	background-color: #F8BE2F;
+	background-color: #fff;
+	color: #006600;
 }
 .bcal-table .bcal-week{
-	border: solid 1px #F4A222;
-	background-color: #F6B652;
-	color: #975301;
+	background-color: #4A682D;
+	border: solid 1px #30441D;
 	cursor: default;
 }
 .bcal-table .bcal-selected{
-	background-color: #DDBF2B;
-	border: solid 1px #B89D1D;
+	background-color: #3D5625;
+	border: solid 1px #233215;
+	color: #fff;
 }
 .bcal-table .bcal-over,
 .bcal-table .bcal-date:hover{
-	background-color: #E6D844;
-	border: solid 1px #C3B51A;
-	color: #C96F01;
+	background-color: #3D5625;
+	border: solid 1px #233215;
+	color: #fff;
 }
