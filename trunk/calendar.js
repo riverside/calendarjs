@@ -10,6 +10,7 @@
 (function (window, undefined) {
 	var now = new Date(),
 		today = [now.getFullYear(), now.getMonth(), now.getDate()].join('-'),
+		midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()),
 		d = window.document;
 
 	function Calendar(options) {
@@ -26,6 +27,7 @@
 			weekNumbers: false,
 			months: 1,
 			inline: false,
+			disablePast: false,
 			dateFormat: 'Y-m-d',
 			onBeforeOpen: function () {},
 			onBeforeClose: function () {},
@@ -390,9 +392,12 @@
 	    	    		}
 	    	    		text = d.createTextNode(day);
 	    	    		cell.appendChild(text);
+	    	    		if (self.opts.disablePast === true && current <= midnight) {
+	    	    			Calendar.Util.addClass(cell, 'bcal-past');
+	    	    		} else {	    	    		
 	    	    		Calendar.Util.addEvent(cell, 'click', (function (self, cell) {
 	    	    			return function () {
-	    	    				s_arr = Calendar.Util.getElementsByClass('bcal-selected', null, 'td');
+		    	    				s_arr = Calendar.Util.getElementsByClass('bcal-selected', self.container, 'td');
 	    	    				for (si = 0, slen = s_arr.length; si < slen; si++) {
 	    	    					Calendar.Util.removeClass(s_arr[si], 'bcal-selected');
 	    	    				}
@@ -405,6 +410,7 @@
 		    	    			self.opts.onSelect.apply(self, [self.element, self.formatDate(self.opts.dateFormat, ts), ts, cell]);
 	    	    			};
 	    	    		})(self, cell));
+	    	    		}
 	    	    		
 	    	    	} else {
 	    	    		Calendar.Util.addClass(cell, 'bcal-empty');
