@@ -41,6 +41,12 @@
 	background-color: #3F4252;
 	border: solid 1px #fff;
 }
+.bcal-table .bcal-past{
+	background-color: #292B36;
+	border: solid 1px #E6E1E1;
+	color: #666;
+	cursor: default;
+}
 .bcal-table .bcal-today{
 	background-color: #1d1d1d;
 }
