@@ -1,11 +1,11 @@
 /*!
- * CalendarJS v1.2
+ * CalendarJS v1.3
  *
  * Copyright 2011, Dimitar Ivanov (http://www.bulgaria-web-developers.com/projects/javascript/calendar/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL Version 3 
  * (http://www.opensource.org/licenses/gpl-3.0.html) license.
  * 
- * Date: Thu Sep 22 00:49:51 2011 +0300
+ * Date: Sun May 12 17:24:51 2012 +0300
  */
 (function (window, undefined) {
 	var now = new Date(),
@@ -29,6 +29,7 @@
 			inline: false,
 			disablePast: false,
 			dateFormat: 'Y-m-d',
+			position: 'bottom',
 			onBeforeOpen: function () {},
 			onBeforeClose: function () {},
 			onOpen: function () {},
@@ -45,12 +46,15 @@
 	/* Static functions */
 	Calendar.Util = {
 		addClass: function (ele, cls) {
-			if (!this.hasClass(ele, cls)) {
+			if (ele && !this.hasClass(ele, cls)) {
 				ele.className += ele.className.length > 0 ? " " + cls : cls;
 			}
 		},
 		hasClass: function (ele, cls) {
-			return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+			if (ele && typeof ele.className != 'undefined' && typeof ele.nodeType != 'undefined' && ele.nodeType === 1) {
+				return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+			}
+			return false;
 		},
 		removeClass: function (ele, cls) {
 			if (this.hasClass(ele, cls)) {
@@ -203,6 +207,11 @@
 		return output.join("");
 	}
 	
+	function is(type, obj) {
+		var clas = Object.prototype.toString.call(obj).slice(8, -1);
+	    return obj !== undefined && obj !== null && clas === type;
+	}
+	
 	Calendar.prototype = {
 		/**
 		 * @return Instance of calendar
@@ -312,6 +321,10 @@
 					self.container.innerHTML = '';
 					for (i = 0; i < self.opts.months; i++) {
 						self.draw(year, month - self.opts.months + i, getIndex(i, self.opts.months));
+						if (i === 0) {
+							self.opts.month = month - self.opts.months;
+							self.opts.year = year;
+						}
 					}
 				});
 				cell.style.cursor = 'pointer';
@@ -338,6 +351,10 @@
 					self.container.innerHTML = '';
 					for (i = 0; i < self.opts.months; i++) {
 						self.draw(year, month + i + 1, getIndex(i, self.opts.months));
+						if (i === 0) {
+							self.opts.month = month + 1;
+							self.opts.year = year;
+						}
 					}
 				});
 				cell.appendChild(text);
@@ -394,23 +411,23 @@
 	    	    		cell.appendChild(text);
 	    	    		if (self.opts.disablePast === true && current <= midnight) {
 	    	    			Calendar.Util.addClass(cell, 'bcal-past');
-	    	    		} else {	    	    		
-	    	    		Calendar.Util.addEvent(cell, 'click', (function (self, cell) {
-	    	    			return function () {
+	    	    		} else {
+							Calendar.Util.addEvent(cell, 'click', (function (self, cell) {
+		    	    			return function () {
 		    	    				s_arr = Calendar.Util.getElementsByClass('bcal-selected', self.container, 'td');
-	    	    				for (si = 0, slen = s_arr.length; si < slen; si++) {
-	    	    					Calendar.Util.removeClass(s_arr[si], 'bcal-selected');
-	    	    				}
-	    	    				Calendar.Util.addClass(cell, 'bcal-selected');
-	    	    				var ts = parseInt(cell.getAttributeNode('bcal-date').value, 10);
-		    	    			if (self.opts.element && !self.opts.inline) {
-			    	    			self.close();
-			    	    			self.element.value = self.formatDate(self.opts.dateFormat, ts);
-		    	    			}
-		    	    			self.opts.onSelect.apply(self, [self.element, self.formatDate(self.opts.dateFormat, ts), ts, cell]);
-	    	    			};
-	    	    		})(self, cell));
-	    	    		}
+		    	    				for (si = 0, slen = s_arr.length; si < slen; si++) {
+		    	    					Calendar.Util.removeClass(s_arr[si], 'bcal-selected');
+		    	    				}
+		    	    				Calendar.Util.addClass(cell, 'bcal-selected');
+		    	    				var ts = parseInt(cell.getAttribute('bcal-date'), 10);
+			    	    			if (self.opts.element && !self.opts.inline) {
+				    	    			self.close();
+				    	    			self.element.value = self.formatDate(self.opts.dateFormat, ts);
+			    	    			}
+			    	    			self.opts.onSelect.apply(self, [self.element, self.formatDate(self.opts.dateFormat, ts), ts, cell]);
+		    	    			};
+		    	    		})(self, cell));
+						}
 	    	    		
 	    	    	} else {
 	    	    		Calendar.Util.addClass(cell, 'bcal-empty');
@@ -453,7 +470,15 @@
 			if (result === false) {
 				return self;
 			}
-			self.container.style.top = (pos[1] + self.element.offsetHeight) + 'px';
+			switch (self.opts.position) {
+				case 'bottom':
+					self.container.style.top = (pos[1] + self.element.offsetHeight) + 'px';
+					break;
+				case 'top':
+					self.container.style.display = '';
+					self.container.style.top = (pos[1] - self.container.offsetHeight) + 'px';
+					break;
+			}
 			self.container.style.left = pos[0] + 'px';			
 			self.container.style.display = '';
 			self.opts.onOpen.apply(self, [self.element]);
@@ -475,6 +500,37 @@
 			self.opts.onClose.apply(self, []);
 			self.isOpen = false;
 			self.focus = false;
+			return self;
+		},
+		option: function (optName) {
+			var self = this;
+			switch (arguments.length) {
+				case 1:
+					if (is('String', optName) && self.opts[optName]) {
+						return self.opts[optName];
+					} else if (is('Object', optName)) {
+						for (var x in optName) {
+							if (optName.hasOwnProperty(x)) {
+								self.opts[x] = optName[x];
+							}
+						}
+					}
+					break;
+				case 2:
+					if (self.opts[optName]) {
+						self.opts[optName] = arguments[1];
+					}
+					break;
+			}
+			return self;
+		},
+		refresh: function () {
+			var self = this;
+			self.container.innerHTML = '';
+			var y = self.opts.year, m = self.opts.month;
+			for (i = 0; i < self.opts.months; i++) {
+				self.draw(y, m + i, getIndex(i, self.opts.months));
+			}
 			return self;
 		}
 	};
