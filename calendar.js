@@ -1,11 +1,11 @@
 /*!
- * CalendarJS v1.3
+ * CalendarJS v1.4
  *
  * Copyright 2011, Dimitar Ivanov (http://www.bulgaria-web-developers.com/projects/javascript/calendar/)
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL Version 3 
  * (http://www.opensource.org/licenses/gpl-3.0.html) license.
  * 
- * Date: Sun May 12 17:24:51 2012 +0300
+ * Date: Sat Jun 9 08:17:22 2012 +0300
  */
 (function (window, undefined) {
 	var now = new Date(),
@@ -30,11 +30,15 @@
 			disablePast: false,
 			dateFormat: 'Y-m-d',
 			position: 'bottom',
+			minDate: null,
 			onBeforeOpen: function () {},
 			onBeforeClose: function () {},
 			onOpen: function () {},
 			onClose: function () {},
-			onSelect: function () {}
+			onSelect: function () {},
+			onBeforeShowDay: function () {
+				return [true, ''];
+			}
 		};
 		for (var key in options) {
 			if (options.hasOwnProperty(key)) {
@@ -311,8 +315,13 @@
 				table = d.createElement('table'),
 				thead = d.createElement('thead'),
 				tbody = d.createElement('tbody'),
-				row, cell, text, a, b, jsdate, current,
-				s_arr, si, slen;
+				row, cell, text, a, b, jsdate, current, oBsd,
+				s_arr, si, slen,
+				minDate = false;
+			
+			if (self.opts.minDate !== null) {
+				minDate = true;
+			}
 			
 			row = d.createElement('tr');
 			cell = d.createElement('th');
@@ -401,16 +410,21 @@
 	    	    for (i = 0; i < 7; i++) {
 	    	    	cell = d.createElement('td');
 	    	    	if (day > 0 && day <= daysInMonth) {
-	    	    		cell.setAttribute('bcal-date', new Date(year, month, day).getTime());
-	    	    		Calendar.Util.addClass(cell, 'bcal-date');
 	    	    		current = new Date(year, month, day);
+	    	    		cell.setAttribute('bcal-date', current.getTime());
+	    	    		Calendar.Util.addClass(cell, 'bcal-date');	    	    		
 	    	    		if (today === [current.getFullYear(), current.getMonth(), current.getDate()].join('-')) {
 	    	    			Calendar.Util.addClass(cell, 'bcal-today');
 	    	    		}
 	    	    		text = d.createTextNode(day);
 	    	    		cell.appendChild(text);
-	    	    		if (self.opts.disablePast === true && current <= midnight) {
+	    	    		oBsd = self.opts.onBeforeShowDay.apply(self, [current]);
+	    	    		if (self.opts.disablePast === true && current < midnight) {
 	    	    			Calendar.Util.addClass(cell, 'bcal-past');
+	    	    		} else if (minDate && current < self.opts.minDate) {
+	    	    			Calendar.Util.addClass(cell, 'bcal-past');
+	    	    		} else if (oBsd[0] === false) {
+	    	    			Calendar.Util.addClass(cell, oBsd[1]);
 	    	    		} else {
 							Calendar.Util.addEvent(cell, 'click', (function (self, cell) {
 		    	    			return function () {
