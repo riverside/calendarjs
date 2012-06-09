@@ -1,0 +1,7 @@
+ver 1.4
+- added options: minDate
+- added events: onBeforeShowDay
+
+ver 1.3
+- added methods: option, refresh
+- added options: disablePast, position
