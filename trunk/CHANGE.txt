@@ -1,3 +1,8 @@
+ver 1.5
+- selectOtherMonths
+- showNavigation
+- showOtherMonths
+
 ver 1.4
 - added options: minDate
 - added events: onBeforeShowDay
