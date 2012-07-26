@@ -1,0 +1,99 @@
+@CHARSET "UTF-8";
+.bcal-container{
+	float: left;
+	padding: 2px 0 0;
+}
+.bcal-table{
+	border-collapse: separate;
+	border-spacing: 0;
+	border: solid 1px #000;
+	font-family: Tahoma, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	float: left;
+	margin: 1px;
+	padding: 0;
+	width: 200px;
+}
+.bcal-table,
+.bcal-table th,
+.bcal-table td {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+.bcal-table thead tr{
+	background-color: #222;
+}
+.bcal-table thead tr:first-child{
+	line-height: 23px;
+}
+.bcal-table thead th{
+	font-weight: bold;
+	color: #fff;
+	height: 20px;
+	text-align: center;
+}
+.bcal-table tbody td{
+	color: #ECECEC;
+	cursor: pointer;
+	font-weight: normal;
+	height: 25px;
+	padding: 0 0 1px 1px;
+	width: 25px;
+	text-align: center;
+}
+.bcal-table tbody td:first-child{
+	padding: 0 0 1px;
+}
+.bcal-table .bcal-wday,
+.bcal-table .bcal-wnum{
+	font-weight: normal;
+	padding: 1px 1px 2px 2px;
+}
+.bcal-table .bcal-wnum{
+	background-color: #2d2d2d;
+	color: #fff;
+}
+.bcal-table .bcal-empty{
+	background-color: #444;
+	color: #999;
+	cursor: default;
+}
+.bcal-table .bcal-date{
+	background-color: #333;
+}
+.bcal-table .bcal-past{
+	background-color: #5E5E5E;
+	color: #999;
+	cursor: default;
+}
+.bcal-table .bcal-today{
+	background-color: #3d3d3d;
+	color: #B3B3B3;
+}
+.bcal-table .bcal-week{
+	background-color: #777;
+	color: #E5E5E5;
+	cursor: default;
+}
+.bcal-table .bcal-selected{
+	background-color: #1d1d1d;
+	color: #F2F2F2;
+}
+.bcal-table .bcal-over,
+.bcal-table .bcal-date:hover{
+	background-color: #4d4d4d;
+	color: #fff;
+}
+.bcal-table .bcal-past:hover{
+	background-color: #515151;
+	color: #8C8C8C;
+}
+.bcal-table .bcal-month,
+.bcal-table .bcal-navi,
+.bcal-table .bcal-wnum,
+.bcal-table .bcal-wday,
+.bcal-table .bcal-week{
+	cursor: text;
+}
