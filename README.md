@@ -58,4 +58,4 @@ http://www.bulgaria-web-developers.com/projects/javascript/calendar/
 1.5
 
 ### License
-CalendarJS is licensed under the **MIT** license.
+Dual licensed under the **MIT** and **GPL v3** license.
