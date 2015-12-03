@@ -5,14 +5,23 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL Version 3 
  * (http://www.opensource.org/licenses/gpl-3.0.html) license.
  * 
+ * 2015, Matej Kenda: added options wkLabel and selectedDate
+ * 
  * Date: Thu Jul 26 23:15:56 2012 +0300
  */
+
+"use strict";
+
 (function (window, undefined) {
 	var now = new Date(),
 		today = [now.getFullYear(), now.getMonth(), now.getDate()].join('-'),
 		midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()),
 		d = window.document;
 
+	/**
+	 * @constructor
+	 * @template Calendar
+	 */
 	function Calendar(options) {
 		this.version = "1.5";
 		this.isOpen = false;
@@ -24,12 +33,15 @@
 		this.opts = {
 			year: new Date().getFullYear(),
 			month: new Date().getMonth(),
+			wkLabel: "wk",
 			dayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
 			dayNamesFull: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 			monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			monthNamesFull: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			startDay: 0,
 			weekNumbers: false,
+			selectedDate: null,
+			element: null,
 			selectOtherMonths: false,
 			showOtherMonths: true,
 			showNavigation: true,
@@ -134,8 +146,8 @@
     	return row;
 	}
 	/**
-	 * @param Object obj
-	 * @return Array
+	 * @param {Object<string, number>} obj
+	 * @return {?Array<number>}
 	 */
 	function findPos(obj) {
 		var curleft = 0, curtop = 0;
@@ -146,11 +158,12 @@
 			} while (obj = obj.offsetParent);
 			return [curleft, curtop];
 		}
+		return null;
 	}
 	/**
-	 * @param Number i
-	 * @param Number month
-	 * @return Number
+	 * @param {number} i
+	 * @param {number} months
+	 * @return {number}
 	 */
 	function getIndex(i, months) {
 		if (i > 0 && i < months - 1) {
@@ -159,16 +172,16 @@
 			return 2;
 		} else if (i === 0 && i === months - 1) {
 			return 3;
-		} else if (i === 0 && i < months - 1) {
-			return 1;
 		}
+		// else if (i === 0 && i < months - 1) {
+		return 1;
 	}
 	/**
 	 * Format date
 	 * 
-	 * @param String format
-	 * @param Number date
-	 * @return String
+	 * @param {string} format
+	 * @param {number} date
+	 * @return {string}
 	 */
 	function _formatDate(format, date) {
 		
@@ -226,7 +239,8 @@
 	
 	Calendar.prototype = {
 		/**
-		 * @return Instance of calendar
+		 * Returns instance of calendar
+		 * @return {Calendar}
 		 */
 		init: function () {
 			var self = this,
@@ -238,7 +252,10 @@
 			if (!self.element) {
 				return;
 			}
-			if (self.element.nodeType === 1 && self.element.nodeName == "INPUT" && self.element.value.length > 0) {
+			if (self.opts.selectedDate) {
+			    self.selectedDate = self.opts.selectedDate; 
+			}
+			else if (self.element.nodeType === 1 && self.element.nodeName == "INPUT" && self.element.value.length > 0) {
 				var now = new Date(self.element.value);
 				self.selectedDate = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
 				self.opts.year = self.selectedDate.getFullYear();
@@ -306,18 +323,18 @@
 			return self;
 		},
 		/**
-		 * @param String format
-		 * @param Number date
-		 * @return String
+		 * @param {string} format
+		 * @param {number} date
+		 * @return {string}
 		 */
 		formatDate: function () {
 			return _formatDate.apply(this, arguments);
 		},
 		/**
-		 * @param Number year
-		 * @param Number month
-		 * @param Number index (0 - without navigation, 1 - prev navigation, 2 - next navigation, 3 - prev and next navigation)
-		 * @param Number id
+		 * @param {number} year
+		 * @param {number} month
+		 * @param {number} index (0 - without navigation, 1 - prev navigation, 2 - next navigation, 3 - prev and next navigation)
+		 * @param {number=} id (optional)
 		 */
 		draw: function (year, month, index, id) {
 			var self = this,
@@ -331,7 +348,7 @@
 				table = d.createElement('table'),
 				thead = d.createElement('thead'),
 				tbody = d.createElement('tbody'),
-				row, cell, text, a, b, jsdate, current, oBsd,
+				row, cell, text, jsdate, current, oBsd,
 				s_arr, si, slen,
 				minDate = false;
 			
@@ -395,7 +412,7 @@
 			row = d.createElement('tr');
 			if (self.opts.weekNumbers) {
 				cell = d.createElement('th');
-				cell.appendChild(d.createTextNode('wk'));
+				cell.appendChild(d.createTextNode(self.opts.wkLabel));
 				Calendar.Util.addClass(cell, "bcal-wnum");
 				row.appendChild(cell);
 			}
@@ -420,10 +437,9 @@
 	    	    if (self.opts.weekNumbers) {
 	    	    	cell = d.createElement('td');
 	    	    	Calendar.Util.addClass(cell, 'bcal-week');
-	    	    	a = new Date(jsdate.getFullYear(), jsdate.getMonth(), jsdate.getDate() - (jsdate.getDay() || 7) + 3);
-	    	    	b = new Date(a.getFullYear(), 0, 4);
-	    	    	cell.appendChild(d.createTextNode(1 + Math.round((a - b) / 864e5 / 7)));
-	    	    	row.appendChild(cell);
+                    var cw = jsdate.getWeek(self.opts.startDay);
+                    cell.appendChild(d.createTextNode(cw));
+                    row.appendChild(cell);
 	    	    }
 
 	    	    for (i = 0; i < 7; i++) {
@@ -464,8 +480,13 @@
 	    	    		}
 	    	    		Calendar.Util.addClass(cell, 'bcal-empty');
 	    	    	}
-	    	    	if (self.selectedDate !== null && self.selectedDate.getTime() === current.getTime() && self.opts.month === month) {
-	    	    		Calendar.Util.addClass(cell, 'bcal-selected');
+	    	    	if (self.selectedDate !== null) {
+	    	    	    var sd = self.selectedDate;
+	    	    	    if (sd.getFullYear() === current.getFullYear() &&
+	    	    	        sd.getMonth() === current.getMonth() &&
+	    	    	        sd.getDate() === current.getDate()) {
+	    	    	        Calendar.Util.addClass(cell, 'bcal-selected');
+	    	    	    }
 	    	    	}
 	    	    	row.appendChild(cell);
 	        	    tbody.appendChild(row);
@@ -518,7 +539,8 @@
     		})(self, cell));
 		},
 		/**
-		 * @return Instance of calendar
+		 * Returns instance of calendar
+         * @return {Calendar}
 		 */
 		open: function () {
 			var self = this,
@@ -545,7 +567,8 @@
 			return self;
 		},
 		/**
-		 * @return Instance of calendar
+         * Returns instance of calendar
+         * @return {Calendar}
 		 */
 		close: function () {
 			var self = this,
@@ -598,5 +621,42 @@
 			return self;
 		}
 	};
-	return (window.Calendar = Calendar);
+	
+	/**
+	 * Returns the week number for this date.  startDay is the day of week the week
+	 * "starts" on for your locale - it can be from 0 to 6. If startDay is 1 (Monday),
+	 * the week returned is the ISO 8601 week number.
+	 * @param {number} dowOffset (default: 1)
+	 * @return {number}
+	 */
+	Date.prototype.getWeek = function (startDay) {
+	    // Adapted code from: https://gist.github.com/dblock/1081513
+	    
+	    startDay = typeof(startDay) == 'number' ? startDay : 1; //default startDay to 1 (Moday)
+        
+	    // Create a copy of this date object  
+	    var target  = new Date(this.valueOf());  
+	    
+	    // Correct the day number with startDay 
+	    var dayNr   = (this.getDay() + (7 - startDay)) % 7;  
+
+	    // Set the target to the thursday of this week so the  
+	    // target date is in the right year  
+	    target.setDate(target.getDate() - dayNr + 3);  
+
+	    // ISO 8601 states that week 1 is the week  
+	    // with january 4th in it  
+	    var jan4    = new Date(target.getFullYear(), 0, 4);  
+
+	    // Number of days between target date and january 4th  
+	    var dayDiff = (target - jan4) / 86400000;    
+
+	    // Calculate week number: Week 1 (january 4th) plus the    
+	    // number of weeks between target date and january 4th    
+	    var weekNr = 1 + Math.ceil(dayDiff / 7);    
+
+	    return weekNr;
+	};	
+	
+	return (window["Calendar"] = Calendar);
 })(window);
