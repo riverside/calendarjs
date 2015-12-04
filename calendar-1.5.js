@@ -45,6 +45,8 @@
 			selectOtherMonths: false,
 			showOtherMonths: true,
 			showNavigation: true,
+            navigationStep: 1,
+            navigationOnAll: false,
 			months: 1,
 			inline: false,
 			disablePast: false,
@@ -161,6 +163,8 @@
 		return null;
 	}
 	/**
+	 * Determines which navigation buttons to draw based on number of months to show and number of month to draw.
+	 * 
 	 * @param {number} i
 	 * @param {number} months
 	 * @return {number}
@@ -330,6 +334,35 @@
 		formatDate: function () {
 			return _formatDate.apply(this, arguments);
 		},
+		
+		/**
+		 * Shall the previous button be rendered or not
+		 * @return {boolean}
+		 */
+		showPrev: function(index) {
+		    if (!this.opts.showNavigation) {
+		        return false;
+		    };
+            if (this.opts.navigationOnAll) {
+                return true;
+            };
+            return (index === 1 || index === 3);		    
+		},
+		
+        /**
+         * Shall the next button be rendered or not
+         * @return {boolean}
+         */
+        showNext: function(index) {
+            if (!this.opts.showNavigation) {
+                return false;
+            };
+            if (this.opts.navigationOnAll) {
+                return true;
+            };
+            return (index === 2 || index === 3);            
+        },
+		
 		/**
 		 * @param {number} year
 		 * @param {number} month
@@ -359,16 +392,17 @@
 			row = d.createElement('tr');
 			// Prev month link
 			cell = d.createElement('th');
-			if (self.opts.showNavigation && (index === 1 || index === 3)) {
+			if (self.showPrev(index)) {
 				Calendar.Util.addEvent(cell, 'click', function (e) {
 					self.container.innerHTML = '';
+                    var firstYear = self.opts.year;
+					var firstMonth = self.opts.month;
+					var startMonth = firstMonth - self.opts.navigationStep;
 					for (i = 0; i < self.opts.months; i++) {
-						self.draw(year, month - self.opts.months + i, getIndex(i, self.opts.months));
-						if (i === 0) {
-							self.opts.month = month - self.opts.months;
-							self.opts.year = year;
-						}
+						self.draw(year, startMonth + i, getIndex(i, self.opts.months));
 					}
+                    self.opts.month = startMonth;
+                    self.opts.year = year;
 				});
 				cell.style.cursor = 'pointer';
 				Calendar.Util.addClass(cell, "bcal-nav");
@@ -388,19 +422,20 @@
 			
 			// Next month link
 			cell = d.createElement('th');
-			if (self.opts.showNavigation && (index === 2 || index === 3)) {
+			if (self.showNext(index)) {
 				cell.style.cursor = 'pointer';
 				Calendar.Util.addClass(cell, "bcal-nav");
 				text = d.createTextNode('>');
 				Calendar.Util.addEvent(cell, 'click', function (e) {
 					self.container.innerHTML = '';
-					for (i = 0; i < self.opts.months; i++) {
-						self.draw(year, month + i + 1, getIndex(i, self.opts.months));
-						if (i === 0) {
-							self.opts.month = month + 1;
-							self.opts.year = year;
-						}
-					}
+                    var firstYear = self.opts.year;
+                    var firstMonth = self.opts.month;
+                    var startMonth = firstMonth + self.opts.navigationStep;
+                    for (i = 0; i < self.opts.months; i++) {
+                        self.draw(year, startMonth + i, getIndex(i, self.opts.months));
+                    }
+                    self.opts.month = startMonth;
+                    self.opts.year = year;
 				});
 				cell.appendChild(text);
 			} else {
@@ -624,9 +659,9 @@
 	
 	/**
 	 * Returns the week number for this date.  startDay is the day of week the week
-	 * "starts" on for your locale - it can be from 0 to 6. If startDay is 1 (Monday),
+	 * starts on for your locale - it can be from 0 to 6. If startDay is 1 (Monday),
 	 * the week returned is the ISO 8601 week number.
-	 * @param {number} dowOffset (default: 1)
+	 * @param {number} startDay (default: 1)
 	 * @return {number}
 	 */
 	Date.prototype.getWeek = function (startDay) {
