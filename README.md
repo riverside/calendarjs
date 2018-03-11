@@ -58,4 +58,4 @@ https://projects.zinoui.com/calendar/
 1.5
 
 ### License
-Dual licensed under the **MIT** and **GPL v3** license.
+Licensed under the **MIT** license.
