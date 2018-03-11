@@ -52,7 +52,7 @@ Option                | Type       | Default
 **onBeforeShowDay**   | *Function* | function () { return [true, '']; }
 
 ### Demo
-http://www.bulgaria-web-developers.com/projects/javascript/calendar/
+https://projects.zinoui.com/calendar/
 
 ### Version
 1.5
