@@ -51,9 +51,6 @@ Option                | Type       | Default
 **onSelect**          | *Function* | function () {}
 **onBeforeShowDay**   | *Function* | function () { return [true, '']; }
 
-### Demo
-https://projects.zinoui.com/calendar/
-
 ### Version
 1.5
 
